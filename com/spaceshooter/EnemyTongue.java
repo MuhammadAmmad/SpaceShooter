@@ -1,7 +1,6 @@
 package com.spaceshooter;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 public class EnemyTongue extends Enemy {
@@ -14,6 +13,7 @@ public class EnemyTongue extends Enemy {
 	private float angle;
 	private EnemyManager enemyManager;
 	private boolean straightShot;
+	//Can only get hurt when its tongue is out. 
 	EnemyTongue(EnemyManager enemyManager) {
 		super(40, ResourceManager.EnemyTongue); 
 		this.enemyManager = enemyManager;

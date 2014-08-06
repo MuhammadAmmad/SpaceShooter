@@ -1,6 +1,7 @@
 package com.spaceshooter;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Intersector;
 
@@ -12,10 +13,12 @@ public class PlayerManager {
 	Explosion explosion = null;
 	float respawnTimer;
 	
-	
+	private Sound pickupSound;
 	PlayerManager() {
 		player = new Player(0,0,false);
 		respawnTimer = 0.0f;
+		pickupSound = ResourceManager.getAssetManager().get(ResourceManager.PowerUpSound,Sound.class);
+		
 	}
 	
 	public void update(EnemyManager enemyManager,BulletManager bulletManager,PickupManager pickupManager,ScoreHandler scoreHandler) {
@@ -24,9 +27,8 @@ public class PlayerManager {
 			for (int i = 0; i < pickupManager.getList().size(); i++) {
 				if (Intersector.overlaps(pickupManager.getList().get(i).getBoundingRectangle()
 						,player.getShowSprite().getBoundingRectangle())) {
-					if (pickupManager.getList().get(i) instanceof CoinPickup)
-						scoreHandler.addScore(1000);
-					else if (pickupManager.getList().get(i) instanceof WeaponPickup)
+					pickupSound.play();
+					if (pickupManager.getList().get(i) instanceof WeaponPickup)
 						player.incrementLevel();
 					else if (pickupManager.getList().get(i) instanceof MissilePickup)
 						player.giveMissile();

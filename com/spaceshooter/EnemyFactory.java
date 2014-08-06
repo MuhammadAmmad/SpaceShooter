@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 
+/*EnemyFactory spawns its own enemies*/
 public class EnemyFactory extends Enemy {
 	private float spawnTimer;
 	private EnemyManager enemyManager;
@@ -30,7 +31,7 @@ public class EnemyFactory extends Enemy {
 			float playerDist = (float) Math.sqrt(Math.pow(
 					getX() - player.getX(), 2)
 					+ Math.pow(getY() - player.getY(), 2));
-			
+			//3 different types.
 			if (type == 0) {
 				if ((spawnTimer > 0.2f) && (playerDist < 600) && (getY() > player.getY())) {
 					enemyManager.addEnemy(new EnemyHoming(),getX() + (getWidth()/2) - 15,getY());
@@ -38,20 +39,20 @@ public class EnemyFactory extends Enemy {
 				}
 			}
 			else if (type == 1) {
-				if ((spawnTimer > 0.5f) && (playerDist < 600) && (getY() > player.getY())) {
-					enemyManager.addEnemy(new EnemySpinner(),getX() + (getWidth()/2) - 15,getY());
-					spawnTimer = 0f;
-				}
-			}
-			else if (type == 2) {
 				if ((spawnTimer > 0.2f) && (playerDist < 600) && (getY() > player.getY())) {
 					enemyManager.addEnemy(new EnemyPopcorn(),getX() + (getWidth()/2 - 15),getY());
 					spawnTimer = 0f;
 				}
 			}
+			else if (type == 2) {
+				if ((spawnTimer > 0.2f) && (playerDist < 600) && (getY() > player.getY())) {
+					enemyManager.addEnemy(new EnemySpinner(),getX() + (getWidth()/2 - 15),getY());
+					spawnTimer = 0f;
+				}
+			}
 			
 		}
-			
+		//Once it is almost destroyed, change to a fitting texture.
 		if (health < 15 && !hasChanged) {
 			setTexture(ResourceManager.getAssetManager().get(ResourceManager.EnemyFactoryDestroyed,Texture.class));
 			hasChanged = true;

@@ -2,6 +2,7 @@ package com.spaceshooter;
 
 import com.badlogic.gdx.Gdx;
 
+//Eye enemy follows the player, and, once it reaches a certain distance, it shoots off bullets in a circular pattern.
 public class EnemyEye extends Enemy {
 	private float bulletTimer;
 	private final int HOMING_SPEED;
@@ -19,32 +20,16 @@ public class EnemyEye extends Enemy {
 	public void updateEnemy(Player player, BulletManager bulletManager) {
 
 		if (player != null) {
-			float angle = (float) Math.atan2(getY() - player.getY(), getX()
-					- player.getX());
-			float degrees = (float) (angle * (180 / Math.PI));
-
-			float directionX = getX() - player.getX();
-			float directionY = getY() - player.getY();
-
-			double sq = Math.sqrt(directionX * directionX + directionY
-					* directionY);
-
-			float velocityX = (float) (directionX
-					* (HOMING_SPEED * Gdx.graphics.getDeltaTime()) / sq);
-			float velocityY = (float) (directionY
-					* (HOMING_SPEED * Gdx.graphics.getDeltaTime()) / sq);
-
-			float playerDist = (float) Math.sqrt(Math.pow(
-					getX() - player.getX(), 2)
-					+ Math.pow(getY() - player.getY(), 2));
-
+			
+			float playerDist = getDistance(player);	
 			if (isAngry == false) {
-				translate(-velocityX, -velocityY);
-				setRotation(degrees - 90);
+				moveTowards(HOMING_SPEED,player);
+				rotateTowards(player);
 				if (playerDist < 200 && !isAngry) {
 					isAngry = true;
 				}
-			} else if (isAngry == true) {
+			} 
+			else if (isAngry == true) {
 				if (getX() > player.getX())
 					rotate(-Gdx.graphics.getDeltaTime() * 100);
 				else
@@ -53,6 +38,7 @@ public class EnemyEye extends Enemy {
 				bulletTimer += (Gdx.graphics.getDeltaTime() / 5);
 
 				if (bulletTimer > 0.03f) {
+					// Creates a circular bullet pattern.
 					bulletManager
 							.getList()
 							.add(new EnemyBulletBasic(
@@ -68,11 +54,11 @@ public class EnemyEye extends Enemy {
 					bulletTimer = 0;
 				}
 			}
-			this.setY(this.getY() - 10 * Gdx.graphics.getDeltaTime());
+			setY(this.getY() - 10 * Gdx.graphics.getDeltaTime());
 		}
 
 		else
-			this.setY(this.getY() - 150 * Gdx.graphics.getDeltaTime());
+			setY(this.getY() - 150 * Gdx.graphics.getDeltaTime());
 
 	}
 }

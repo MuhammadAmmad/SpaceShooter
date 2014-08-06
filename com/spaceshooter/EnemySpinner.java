@@ -9,30 +9,18 @@ public class EnemySpinner extends Enemy {
 	private boolean isAngry;
 	private float directionX;
 	private	float directionY;
-	private boolean m_hard;
 	private float bulletTimer;
+	private Texture hardTexture;
 	EnemySpinner() {
-		super(25,ResourceManager.EnemySpinner);
+		super(5,ResourceManager.EnemySpinner);
+		hardTexture = ResourceManager.getAssetManager().get(ResourceManager.EnemySpinnerHard,Texture.class);
 		HOMING_SPEED = 100;
 		isAngry = false;
 		setOrigin(getWidth() / 2, getHeight() / 2);
 		directionX = 0f;
 		directionY = 0f;
-		m_hard = true;
 		bulletTimer = 0f;
 	}
-	
-	EnemySpinner(boolean hard) {
-		super(5,ResourceManager.EnemySpinner);
-		HOMING_SPEED = 300;
-		isAngry = false;
-		setOrigin(getWidth() / 2, getHeight() / 2);
-		directionX = 0f;
-		directionY = 0f;
-		m_hard = hard;
-		bulletTimer = 0f;
-	}
-
 	public void updateEnemy(Player player, BulletManager bulletManager) {
 
 		rotate(Gdx.graphics.getDeltaTime()*300);
@@ -47,7 +35,7 @@ public class EnemySpinner extends Enemy {
 	
 				if (!isAngry) {
 					isAngry = true;
-					setTexture(new Texture("media/spinner2.png"));
+					setTexture(hardTexture);
 					directionX = getX() - player.getX();
 					directionY = getY() - player.getY();
 				}
@@ -61,7 +49,7 @@ public class EnemySpinner extends Enemy {
 						* (HOMING_SPEED * Gdx.graphics.getDeltaTime()) / sq);
 	
 				translate(-velocityX, -velocityY);
-				if (isAngry && m_hard) {
+				if (isAngry) {
 					// Make bullets
 					if (bulletTimer > 0.009f) {
 						bulletManager.getList().add(new EnemyBulletBasic(getX()+getWidth()/2,getY()+getHeight()/2,
@@ -78,11 +66,11 @@ public class EnemySpinner extends Enemy {
 				}
 			} 
 			else {
-				super.updateEnemy(player, bulletManager);
+				setY(getY() - 150 * Gdx.graphics.getDeltaTime());
 			}
 		}
 		else {
-			super.updateEnemy(player, bulletManager);	
+			setY(getY() - 150 * Gdx.graphics.getDeltaTime());
 		}
 
 	}

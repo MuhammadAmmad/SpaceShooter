@@ -13,5 +13,6 @@ public class WeaponPickup extends Pickup {
 	@Override
 	public void update() {
 		translateY(-100 * Gdx.graphics.getDeltaTime());
+		rotate(Gdx.graphics.getDeltaTime()*-100.f);
 	}
 }

@@ -3,12 +3,7 @@ package com.spaceshooter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+//Main class, program flow starts here. 
 public class SpaceShooter extends Game {
 
 	private MenuScreen menuScreen;
@@ -41,8 +36,8 @@ public class SpaceShooter extends Game {
 	public static int getBottomBound() {
 		return -1 * (Gdx.graphics.getHeight() / 2);
 	}
-	//Normalize the speed of bullets across the game.
+	//Normalize the speed of bullets across the game, easy to re-adjust difficulty. 
 	public static float getBulletSpeed() {
-		return 175f;
+		return 150f;
 	}
 }

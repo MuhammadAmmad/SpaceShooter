@@ -1,9 +1,5 @@
 package com.spaceshooter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -11,75 +7,62 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ScoreHandler {
-	private int m_Score;
-	private BitmapFont m_Font;
-	private String m_String;
-	private String m_HighScoreString;
-	private FileHandle m_File;
-	private int m_CurrentHighScore;
+	private int score;
+	private BitmapFont font;
+	private String string;
+	private String highScoreString;
+	private FileHandle file;
+	private int currentHighScore;
+
+	{
+		score = 0;
+		font = new BitmapFont(
+				Gdx.files.internal("media/skinsandfonts/game/gamefont.fnt"),
+				Gdx.files.internal("media/skinsandfonts/game/gamefont.png"),
+				false);
+		font.setColor(Color.WHITE);
+		font.setScale(0.5f, 0.5f);
+		string = new String("SCORE: " + score);
+
+		font.setColor(font.getColor().r, font.getColor().g, font.getColor().b,
+				125f);
+
+		currentHighScore = 0;
+
+		file = Gdx.files.local("data/data1.bin");
+		if (file.exists()) {
+			String scoreString = file.readString();
+			currentHighScore = Integer.valueOf(scoreString.substring(
+					scoreString.indexOf(":") + 1, scoreString.indexOf(";")));
+		} else {
+			currentHighScore = 0;
+		}
+
+		highScoreString = new String("HIGH SCORE: " + currentHighScore);
+	}
 
 	public ScoreHandler() {
-		m_Score = 0;
-		m_Font = new BitmapFont(Gdx.files.internal("media/skinsandfonts/game/gamefont.fnt"),Gdx.files.internal("media/skinsandfonts/game/gamefont.png"),false);
-		m_Font.setColor(Color.WHITE);
-		m_Font.setScale(0.5f,0.5f);
-		m_String = new String("SCORE: " + m_Score);
-		
-		m_Font.setColor(m_Font.getColor().r,m_Font.getColor().g,m_Font.getColor().b,125f);
-
-		m_CurrentHighScore = 0;
-
-		m_File = Gdx.files.local("data/data1.bin");
-		if (m_File.exists()) {
-			String scoreString = m_File.readString();
-			m_CurrentHighScore = Integer.valueOf(scoreString.substring(scoreString.indexOf(":") + 1, 
-			scoreString.indexOf(";")));
-		}
-		else {
-			m_CurrentHighScore = 0;
-		}
-	
-		m_HighScoreString = new String("HIGH SCORE: " + m_CurrentHighScore);
 	}
 
 	public ScoreHandler(int startingScore) {
-		m_Score = startingScore;
-		m_Font = new BitmapFont(Gdx.files.internal("media/skinsandfonts/game/gamefont.fnt"),Gdx.files.internal("media/skinsandfonts/game/gamefont.png"),false);
-		m_Font.setColor(Color.WHITE);
-		m_Font.setScale(0.5f,0.5f);
-		m_String = new String("SCORE: " + m_Score);
-		
-		m_Font.setColor(m_Font.getColor().r,m_Font.getColor().g,m_Font.getColor().b,125f);
-
-		m_CurrentHighScore = 0;
-
-		m_File = Gdx.files.local("data/data1.bin");
-		if (m_File.exists()) {
-			String scoreString = m_File.readString();
-			m_CurrentHighScore = Integer.valueOf(scoreString.substring(scoreString.indexOf(":") + 1, 
-			scoreString.indexOf(";")));
-		}
-		else {
-			m_CurrentHighScore = 0;
-		}
-	
-		m_HighScoreString = new String("HIGH SCORE: " + m_CurrentHighScore);
+		score = startingScore;
 	}
 
 	public int getScore() {
-		return m_Score;
+		return score;
 	}
 
 	public void setScore(int amount) {
-		m_Score = amount;
+		score = amount;
 	}
 
 	public void addScore(int amount) {
-		m_Score += amount; 
-							
+		score += amount;
+
 	}
+
 	public void reduceScore(int amount) {
-		m_Score -= amount;
+		score -= amount;
 	}
 
 	public void displayScore(SpriteBatch batch, float x, float y) // displays
@@ -90,17 +73,19 @@ public class ScoreHandler {
 																	// main
 																	// loop)
 	{
-		m_String = "SCORE: " + m_Score + " FPS: " + Gdx.graphics.getFramesPerSecond(); // dynamically set the score.
-		m_HighScoreString = new String("HIGH SCORE: " + m_CurrentHighScore);
-		m_Font.draw(batch, m_String, x, y);
-		m_Font.draw(batch, m_HighScoreString, x, y - 50); //show it later
+		string = "SCORE: " + score + " FPS: "
+				+ Gdx.graphics.getFramesPerSecond(); // dynamically set the
+														// score.
+		highScoreString = new String("HIGH SCORE: " + currentHighScore);
+		font.draw(batch, string, x, y);
+		font.draw(batch, highScoreString, x, y - 50); // show it later
 	}
 
 	public void saveScore() {
 
-		if (m_Score > m_CurrentHighScore) {
-			m_CurrentHighScore = m_Score;
-			m_File.writeString("SCORE:" + m_Score + ";", false);
+		if (score > currentHighScore) {
+			currentHighScore = score;
+			file.writeString("SCORE:" + score + ";", false);
 		}
 	}
 }

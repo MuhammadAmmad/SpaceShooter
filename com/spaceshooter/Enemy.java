@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
+/* All in-game enemies derive from the Enemy class, including the EnemyMissile. The enemies are managed by the EnemyManager class. */
 public class Enemy extends Sprite {
 	protected boolean gotHit;
 	protected int health;
 	public boolean isDead;
+	//When the enemy gets hit by a bullet, let the enemy blink for a split second to let the player know the enemy ship was hit. 
 	private float redTimer;
 	
 	protected boolean isInvincible;
@@ -76,11 +78,13 @@ public class Enemy extends Sprite {
 				isDead = true;
 		}
 		else
-			setColor(Color.BLUE);
+			setColor(Color.BLUE); //Invincible enemies turn blue, to let the player know that the ship was NOT hit.
 	}
 	public boolean isInvincible() {
 		return isInvincible;
 	}
+	
+	// Helper functions to save time and to avoid repeating code. 
 	public float getDistance(Sprite other) {
 		float dist = (float) Math.sqrt(Math.pow(
 				getX() - other.getX(), 2)
@@ -88,28 +92,29 @@ public class Enemy extends Sprite {
 		
 		return dist;
 	}
-	public void moveTowards(double Speed, Sprite other) {
+	public Vector2 moveTowards(double speed, Sprite other) {
 		float directionX = getX() - other.getX();
 		float directionY = getY() - other.getY();
 		double sq = Math
 				.sqrt(directionX * directionX + directionY * directionY);
 
 		float velocityX = (float) (directionX
-				* (Speed * Gdx.graphics.getDeltaTime()) / sq);
+				* (speed * Gdx.graphics.getDeltaTime()) / sq);
 		float velocityY = (float) (directionY
-				* (Speed * Gdx.graphics.getDeltaTime()) / sq);
+				* (speed * Gdx.graphics.getDeltaTime()) / sq);
 
 		translate(-velocityX, -velocityY);
+		return new Vector2(-velocityX,-velocityY);
 	}
 	
-	public void moveTowardsX(double Speed, Sprite other) {
+	public void moveTowardsX(double speed, Sprite other) {
 		float directionX = getX() - other.getX();
 		float directionY = getY() - other.getY();
 		double sq = Math
 				.sqrt(directionX * directionX + directionY * directionY);
 
 		float velocityX = (float) (directionX
-				* (Speed * Gdx.graphics.getDeltaTime()) / sq);
+				* (speed * Gdx.graphics.getDeltaTime()) / sq);
 		
 		translateX(-velocityX);
 	}
@@ -119,6 +124,13 @@ public class Enemy extends Sprite {
 				getX() - other.getX());
 		float degrees = (float) (angle * (180 / Math.PI));
 		setRotation(degrees - 90);
+	}
+	//Useful for an upside-down sprite. 
+	public void rotateTowardsFlipped(Sprite other) {
+		float angle = (float) Math.atan2(getY() - other.getY(),
+				getX() - other.getX());
+		float degrees = (float) (angle * (180 / Math.PI));
+		setRotation(degrees + 90);
 	}
 }
 	

@@ -1,20 +1,16 @@
 package com.spaceshooter;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 public class LevelScreen implements Screen {
-	private SpaceShooter game;
-	
+
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture bgtexture;
@@ -24,18 +20,17 @@ public class LevelScreen implements Screen {
 	private Sprite bgsprite2;
 
 	private float scrollTimer = 0.0f;
-
-	private Music bgm;
-
+	
 	private BulletManager bulletManager;
 	private EnemyManager enemyManager;
 	private PlayerManager playerManager;
 	private ScoreHandler scoreHandler;
 	private PickupManager pickupManager;
 	
-	public LevelScreen(SpaceShooter game) {
-		this.game = game;
+	//Main level screen.
+	public LevelScreen() {
 		Gdx.input.setCursorCatched(true);
+		Gdx.input.setCatchBackKey(false);
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -55,23 +50,17 @@ public class LevelScreen implements Screen {
 		// first scroll
 		bgsprite = new Sprite(bgtexture);
 		bgsprite.setPosition(SpaceShooter.getLeftBound(), SpaceShooter.getBottomBound());
-		// Load the stars with alpha channel
 		
 		// second scroll to make parallax
 		bgsprite2 = new Sprite(bgtexture2);
 		
-		//bgsprite2.translate(getLeftBound()*2,getBottomBound());
-		bgsprite2.setPosition(SpaceShooter.getLeftBound() - (bgsprite2.getWidth()/4), SpaceShooter.getLeftBound());
+		bgsprite2.setPosition(SpaceShooter.getLeftBound() - (bgsprite2.getWidth()/4), SpaceShooter.getBottomBound());
 		bgsprite2.setColor(bgsprite2.getColor().r, bgsprite2.getColor().g,
 				bgsprite2.getColor().b, 125);
 		
 		bulletManager = new BulletManager();
 		enemyManager = new EnemyManager();
-		bgm = Gdx.audio.newMusic(Gdx.files.internal("media/ethervapor.mp3"));
-		bgm.setLooping(true);
 		
-		if (!SpaceShooter.isMuted())
-			bgm.play();
 		
 		playerManager = new PlayerManager();
 
@@ -81,9 +70,9 @@ public class LevelScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		
-		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE)) {
-			  game.setScreen(new MenuScreen(game));
+		//For desktop version.
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE)) {
+			 Gdx.app.exit();
 		}
 		
 		scrollTimer += (Gdx.graphics.getDeltaTime() / 5);
@@ -125,12 +114,47 @@ public class LevelScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+		scoreHandler.saveScore();
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
+		ResourceManager.reLoad();
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+
+		camera = new OrthographicCamera(w, h);
+		batch = new SpriteBatch();
+		// Load the stars with alpha channel
+		bgtexture = ResourceManager.getAssetManager().get(
+				ResourceManager.PrimaryBG1, Texture.class);
+		bgtexture.setWrap(Texture.TextureWrap.Repeat,
+				Texture.TextureWrap.Repeat);
+		
+		bgtexture2 = ResourceManager.getAssetManager().get(
+				ResourceManager.ParallaxBG, Texture.class);
+		bgtexture2.setWrap(Texture.TextureWrap.Repeat,
+				Texture.TextureWrap.Repeat);
+	
+		// first scroll
+		bgsprite = new Sprite(bgtexture);
+		bgsprite.setPosition(SpaceShooter.getLeftBound(), SpaceShooter.getBottomBound());
+		// Load the stars with alpha channel
+		
+		// second scroll to make parallax
+		bgsprite2 = new Sprite(bgtexture2);
+		
+		//bgsprite2.translate(getLeftBound()*2,getBottomBound());
+		bgsprite2.setPosition(SpaceShooter.getLeftBound() - (bgsprite2.getWidth()/4), SpaceShooter.getBottomBound());
+		bgsprite2.setColor(bgsprite2.getColor().r, bgsprite2.getColor().g,
+				bgsprite2.getColor().b, 125);
+		
+		bulletManager = new BulletManager();
+		enemyManager = new EnemyManager();
+		
+		
+		playerManager = new PlayerManager();
+		pickupManager = new PickupManager();
 		
 	}
 
@@ -143,13 +167,48 @@ public class LevelScreen implements Screen {
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		dispose();
+		scoreHandler.saveScore();
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		ResourceManager.loadAll();
+		ResourceManager.reLoad();
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+
+		camera = new OrthographicCamera(w, h);
+		batch = new SpriteBatch();
+		// Load the stars with alpha channel
+		bgtexture = ResourceManager.getAssetManager().get(
+				ResourceManager.PrimaryBG1, Texture.class);
+		bgtexture.setWrap(Texture.TextureWrap.Repeat,
+				Texture.TextureWrap.Repeat);
+		
+		bgtexture2 = ResourceManager.getAssetManager().get(
+				ResourceManager.ParallaxBG, Texture.class);
+		bgtexture2.setWrap(Texture.TextureWrap.Repeat,
+				Texture.TextureWrap.Repeat);
+	
+		// first scroll
+		bgsprite = new Sprite(bgtexture);
+		bgsprite.setPosition(SpaceShooter.getLeftBound(), SpaceShooter.getBottomBound());
+		// Load the stars with alpha channel
+		
+		// second scroll to make parallax
+		bgsprite2 = new Sprite(bgtexture2);
+		
+		//bgsprite2.translate(getLeftBound()*2,getBottomBound());
+		bgsprite2.setPosition(SpaceShooter.getLeftBound() - (bgsprite2.getWidth()/4), SpaceShooter.getBottomBound());
+		bgsprite2.setColor(bgsprite2.getColor().r, bgsprite2.getColor().g,
+				bgsprite2.getColor().b, 125);
+		
+		bulletManager = new BulletManager();
+		enemyManager = new EnemyManager();
+		
+		
+		playerManager = new PlayerManager();
+		pickupManager = new PickupManager();
 	}
 
 	@Override
@@ -160,7 +219,6 @@ public class LevelScreen implements Screen {
 		enemyManager.clear();
 		bgtexture.dispose();
 		bgtexture2.dispose();
-		playerManager.dispose();
 		pickupManager.dispose();
 		ResourceManager.getAssetManager().dispose();
 		

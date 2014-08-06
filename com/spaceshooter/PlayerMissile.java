@@ -1,12 +1,12 @@
 package com.spaceshooter;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
 public class PlayerMissile extends PlayerBullet {
-	private ParticleEffect particle;
+	public ParticleEffect particle;
 	private float velocityX;
 	private float velocityY;
 	private float angle;
@@ -16,11 +16,7 @@ public class PlayerMissile extends PlayerBullet {
 	
 	public PlayerMissile(float xPos,float yPos) {
 		super(ResourceManager.Missile);
-		/*particle = ResourceManager.getAssetManager().get(ResourceManager.MissileParticle,
-				ParticleEffect.class);*/
-		
 		particle = new ParticleEffect();
-		//particle.load(new FileHandle(ResourceManager.MissileParticle),new FileHandle("media"));
 		particle.load(Gdx.files.internal(ResourceManager.MissileParticle),Gdx.files.internal("media"));
 		setPosition(xPos,yPos);
         velocityX = 0f;
@@ -47,6 +43,7 @@ public class PlayerMissile extends PlayerBullet {
 			}
 			hasFound = true;
 		}
+		//If there are no enemies on screen, the missile shoots upwards. 
 		if (minDist == 99999.0 || closestEnemy.isDead) {
 			velocityX = 0f;
 			velocityY = -400f * Gdx.graphics.getDeltaTime();
@@ -76,8 +73,7 @@ public class PlayerMissile extends PlayerBullet {
 		particle.setPosition(getX()+(getTexture().getWidth() / 2), getY()+(getTexture().getHeight() / 2)); // set the particle's position to
 		for (int i = 0; i < particle.getEmitters().size;i++) {
 			particle.getEmitters().get(i).getAngle().setLow(angle - 180); //min
-            particle.getEmitters().get(i).getAngle().setHigh(angle - 180); //max
-           
+            particle.getEmitters().get(i).getAngle().setHigh(angle - 180); //max    
 		}
 		particle.draw(batch, Gdx.graphics.getDeltaTime());
 	}

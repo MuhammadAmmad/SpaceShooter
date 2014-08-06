@@ -6,10 +6,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.assets.loaders.*;
-import com.badlogic.gdx.assets.loaders.resolvers.*;
 public class ResourceManager {
-	private static final AssetManager assetManager = new AssetManager();
-	private static final ParticleEffectLoader particleLoader = new ParticleEffectLoader(new InternalFileHandleResolver());
+	private static AssetManager assetManager = new AssetManager();
+	
 	public static final String Player = "media/playerspaceship.png";
 	public static final String Hitbox = "media/hitbox.png";
 	public static final String Thrusters = "media/thrusters.p";
@@ -17,14 +16,13 @@ public class ResourceManager {
 	public static final String PlayerBulletSprite = "media/bulletsprite.png";
 	public static final String Missile = "media/missile.png";
 	public static final String MissileParticle = "media/missile.p";
-	public static final String WeaponPickup = "media/powerup/weaponpowerup.png";
+	public static final String WeaponPickup = "media/powerup/powerupship.png";
 	public static final String Bullet = "media/enemybulletorange.png";
-	public static final String Coin = "media/powerup/coingreen.png";
-	public static final String MissilePickup = "media/powerup/missile.png";
+	public static final String MissilePickup = "media/powerup/missilepowerup.png";
 	public static final String Enemy = "media/enemy.png";
 	public static final String EnemyCargo1 = "media/cargo1.png";
 	
-	// Next four are the same enemy, different "animations" :
+	// Next four are the same enemy, different "textures" :
 	public static final String MissileEnemy = "media/enemy/missileenemy/enemy.png";
 	public static final String MissileEnemyM = "media/enemy/missileenemy/enemym.png";
 	public static final String MissileEnemyL = "media/enemy/missileenemy/enemyl.png";
@@ -45,11 +43,15 @@ public class ResourceManager {
 	public static final String EnemyKiller1 = "media/Killer1.png"; 
 	public static final String EnemyKiller1b = "media/Killer1b.png"; 
 	public static final String EnemySpinner = "media/spinner1.png";
+	public static final String EnemySpinnerHard = "media/spinner2.png";
 	public static final String ExplosionParticle1 = "media/explosion2.p";
 	public static final String ExplosionSound1 = "media/explosionsound.mp3";
+	public static final String PlayerShootSound = "media/lasersound.mp3";
+	public static final String PowerUpSound = "media/reload.mp3";
 	private static ParticleEffectLoader.ParticleEffectParameter param;
 	public ResourceManager() {
 		param.imagesDir = Gdx.files.internal("media");
+		assetManager = new AssetManager();
 	}
 	public static void loadAll() {
 		assetManager.load(Player,Texture.class); 
@@ -59,8 +61,6 @@ public class ResourceManager {
 		assetManager.load(PlayerBullet,ParticleEffect.class); 
 		
 		assetManager.load(Bullet,Texture.class);
-		
-		assetManager.load(Coin,Texture.class);
 		
 		assetManager.load(Missile,Texture.class); 
 		assetManager.load(MissileParticle,ParticleEffect.class); 
@@ -87,10 +87,16 @@ public class ResourceManager {
 		assetManager.load(EnemyKiller1,Texture.class);
 		assetManager.load(EnemyKiller1b,Texture.class);
 		assetManager.load(EnemySpinner,Texture.class);
-		
+		assetManager.load(EnemySpinnerHard,Texture.class);
 		assetManager.load(ExplosionSound1,Sound.class);
+		assetManager.load(PlayerShootSound,Sound.class);
+		assetManager.load(PowerUpSound,Sound.class);
 		assetManager.load(ExplosionParticle1,ParticleEffect.class,param); 
 		assetManager.finishLoading();
+	}
+	public static void reLoad() {
+		assetManager = new AssetManager();
+		loadAll();
 	}
 	public static AssetManager getAssetManager() {
 		return assetManager;

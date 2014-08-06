@@ -3,12 +3,14 @@ package com.spaceshooter;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+//Player class. 
 public class Player extends Sprite {
 
 	public ParticleEffect particle;
@@ -21,6 +23,7 @@ public class Player extends Sprite {
 	private float missileTimer;
 	private float bulletTimer;
 	private boolean hideHitbox;
+	private Sound shootSound;
 	private float hasMissileTimer; //when this reaches a peak, the player loses missile ability until the player acquires the powerup again.
 	private static final int MAX_LEVEL = 4;
 	
@@ -28,6 +31,7 @@ public class Player extends Sprite {
 	Player(float x, float y,boolean justDied) {
 		super(ResourceManager.getAssetManager().get(ResourceManager.Hitbox,Texture.class));
 		playerSprite = new Sprite(ResourceManager.getAssetManager().get(ResourceManager.Player,Texture.class));
+		shootSound = ResourceManager.getAssetManager().get(ResourceManager.PlayerShootSound,Sound.class);
 		bulletTimer = 0f;
 		missileTimer = 0f;
 		levelTimer = 0f;
@@ -68,15 +72,20 @@ public class Player extends Sprite {
 			setY(SpaceShooter.getBottomBound());
 		
 		bulletTimer += Gdx.graphics.getDeltaTime() / 5;
-		levelTimer += Gdx.graphics.getDeltaTime() / 5;
+		
+		if (weaponLevel > 1)
+			levelTimer += Gdx.graphics.getDeltaTime();
+		
+		System.out.println(levelTimer);
 		if (hasMissile) {
 			missileTimer += Gdx.graphics.getDeltaTime() / 5;
 			hasMissileTimer += Gdx.graphics.getDeltaTime();
 		}
 		
-		translate(Gdx.input.getDeltaX()+(Gdx.graphics.getDeltaTime()),-Gdx.input.getDeltaY()+(Gdx.graphics.getDeltaTime()));
+		translate(Gdx.input.getDeltaX()*1.5f+(Gdx.graphics.getDeltaTime()),-Gdx.input.getDeltaY()*1.5f+(Gdx.graphics.getDeltaTime()));
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
 			if (Gdx.input.isButtonPressed(Buttons.LEFT) && bulletTimer > 0.02f) {
+				shootSound.play(0.1f);
 				bulletManager.getList().add(new PlayerBullet(getX() - 20,getY(),0,600f,weaponLevel));
 				bulletManager.getList().add(new PlayerBullet(getX() + 25,getY(),0,600f,weaponLevel));
 					
@@ -85,7 +94,7 @@ public class Player extends Sprite {
 		}
 		else if (Gdx.app.getType() == ApplicationType.Android) {
 			if (Gdx.input.isTouched() && bulletTimer > 0.04f) {
-			
+				shootSound.play(0.1f);
 				bulletManager.getList().add(new PlayerBullet(getX() - 20,getY(),0,600f,weaponLevel));
 				bulletManager.getList().add(new PlayerBullet(getX() + 25,getY(),0,600f,weaponLevel));
 					
@@ -98,7 +107,7 @@ public class Player extends Sprite {
 			hasMissile = false; 
 			hasMissileTimer = 0f;
 		}
-		if (levelTimer > 100f) {
+		if (levelTimer > 20f) {
 			decrementLevel();
 		}
 		if (missileTimer > 0.2f && hasMissile) {
@@ -155,8 +164,10 @@ public class Player extends Sprite {
 		return isDead;
 	}
 	public void decrementLevel()  {
-		if (weaponLevel > 0)
+			levelTimer = 0f;
 			weaponLevel--;
+			if (weaponLevel < 1)
+				weaponLevel = 1;
 	}
 	public void incrementLevel() {
 			levelTimer = 0f; //reset the level timer.

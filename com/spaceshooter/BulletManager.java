@@ -10,14 +10,19 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 
 public class BulletManager {
-	private List<Bullet> bulletList;
-	private Explosion explosion = null;
-	float blowX = 0.0f, blowY = 0.0f;
-	float blowTimer = 0.0f;
-	private boolean collision = false;
-
+	private List<Bullet> bulletList; //LinkedList that handles all the bullets. 
+	private Explosion explosion;
+	float blowX, blowY; //X and Y position of the explosion when bullets collide. 
+	float blowTimer;
+	private boolean collision;
+	/* Use a double LinkedList instead of an ArrayList to store Bullets to improve efficiency and make removing elements 
+	  take constant time*/
 	BulletManager() {
-		bulletList = new LinkedList<Bullet>();
+		bulletList = new ArrayList<Bullet>();
+		blowX = 0.0f;
+		blowY = 0.0f;
+		blowTimer = 0.0f;
+		collision = false;
 	}
 
 	public void update(EnemyManager enemyManager, SpriteBatch batch,
@@ -34,25 +39,28 @@ public class BulletManager {
 					Enemy e = enemyIter.next();
 					if (Intersector.overlaps(b.getBoundingRectangle(), e.getBoundingRectangle()) == true
 							&& b instanceof PlayerBullet) {
-					
+						//Reduce the enemy's health by the specified amount determined by the player's level.
 						e.hit(player.getWeaponLevel());
 						
 						if (e.isDead) {
 							blowX = b.getX();
 							blowY = b.getY();
 							explosion = new Explosion(blowX, blowY);
+							// Different enemies give out different score bonuses.	
+							if (e instanceof EnemyTongue || e instanceof EnemyRedship || e instanceof EnemyCargo)
+								scorehandler.addScore(3000); // 5k bonus for the hard ones. 
+							else if (e instanceof EnemyFactory || e instanceof EnemyKiller1 || e instanceof EnemyEye
+									|| e instanceof EnemyMissileShip)
+								scorehandler.addScore(2000); // 3k bonus for the moderate ones. 
+							else
+								scorehandler.addScore(1000);
+							// Power-ups will not drop every time. 
 							int rand = MathUtils.random(8);
 							if (rand == 0) {
-								/*pickupManager.getList().add(new CoinPickup(e.getX(),
-										e.getY()));*/
-								
-								scorehandler.addScore(1000);
-							}
-							else if (rand == 1) {
 								pickupManager.getList().add(new WeaponPickup(e.getX(),
 										e.getY()));
 							}
-							else if (rand == 2) {
+							else if (rand == 1) {
 								pickupManager.getList().add(new MissilePickup(e.getX(),
 										e.getY()));
 							}
@@ -77,10 +85,6 @@ public class BulletManager {
 							player.killPlayer();
 							collision = true;
 						}
-						/*
-						 * In the future, check for enemy types and add a higher or
-						 * lower score Depending on the enemy
-						 */
 					}
 	
 				}
@@ -111,17 +115,18 @@ public class BulletManager {
 	public void draw(SpriteBatch batch) {
 		// Looping through the Linked List with O(n).
 		for (Bullet b : bulletList) {
-			if (b != null && (!(b instanceof PlayerBullet))) //Don't draw the actual hitbox sprite
+			if (b != null && (!(b instanceof PlayerBullet))) //Don't draw the actual sprite for the PlayerBullet, only the particle is drawn.
 				b.draw(batch);
 		}
 
 		if (explosion != null)
-			explosion.draw(batch);
+			explosion.draw(batch); /*Having only one explosion active at a time eliminates the need for an ExplosionManager class and is
+									not noticeable by the player.*/
 	}
 	public void clear() {
 		bulletList.clear();
 	}
 	public void dispose() {
-		bulletList.clear();
+		clear();
 	}
 }

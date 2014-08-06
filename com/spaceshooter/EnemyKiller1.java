@@ -3,6 +3,7 @@ package com.spaceshooter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+// EnemyKiller1 shoots two streams of bullets. 
 public class EnemyKiller1 extends Enemy {
 	private float bulletTimer;
 	private float angryTimer;
@@ -10,11 +11,9 @@ public class EnemyKiller1 extends Enemy {
 	private Texture happyTexture;
 	private boolean isAngry;
 	private float angle;
-	
-	private boolean wave;
-	
-	EnemyKiller1() {
-		super(50, ResourceManager.EnemyKiller1);
+	private boolean wave; 
+	//Initialization block to avoid repeating constructor code. 
+	{	
 		angryTexture = ResourceManager.getAssetManager().get(
 				ResourceManager.EnemyKiller1b, Texture.class);
 		happyTexture = ResourceManager.getAssetManager().get(
@@ -22,18 +21,14 @@ public class EnemyKiller1 extends Enemy {
 		bulletTimer = 0f;
 		angryTimer = 0f;
 		isAngry = false;
+	}
+	EnemyKiller1() {
+		super(50, ResourceManager.EnemyKiller1);
 		angle = 0.0f;
 		this.wave = false;
 	}
 	EnemyKiller1(boolean wave, float startAngle) {
 		super(50, ResourceManager.EnemyKiller1);
-		angryTexture = ResourceManager.getAssetManager().get(
-				ResourceManager.EnemyKiller1b, Texture.class);
-		happyTexture = ResourceManager.getAssetManager().get(
-				ResourceManager.EnemyKiller1, Texture.class);
-		bulletTimer = 0f;
-		angryTimer = 0f;
-		isAngry = false;
 		angle = startAngle;
 		this.wave = wave;
 	}

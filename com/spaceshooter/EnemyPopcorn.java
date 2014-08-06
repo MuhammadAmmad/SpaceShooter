@@ -1,22 +1,22 @@
 package com.spaceshooter;
 
 import com.badlogic.gdx.Gdx;
-
+//Simple enemy, either moves with a sine wave pattern or straight down. 
 public class EnemyPopcorn extends Enemy {
 	private float bulletTimer;
 	private float angle;
-	private boolean m_Wave;
+	private boolean wave;
 	
 	EnemyPopcorn() {
 		super(5);
 		bulletTimer = 0f;
-		m_Wave = false;
+		wave = false;
 		angle = 0f;
 	}
 
 	EnemyPopcorn(boolean wave, float startAngle) {
 		super(2);
-		m_Wave = wave;
+		this.wave = wave;
 		bulletTimer = 0f;
 		angle = startAngle;
 	}
@@ -25,7 +25,7 @@ public class EnemyPopcorn extends Enemy {
 		bulletTimer += (Gdx.graphics.getDeltaTime() / 5);
 		angle += Gdx.graphics.getDeltaTime() * 100f;
 
-		if (m_Wave)
+		if (wave)
 			setPosition(getX() + 4f * (float) Math.sin(Math.toRadians(angle)),
 					getY() - 75 * Gdx.graphics.getDeltaTime());
 		else

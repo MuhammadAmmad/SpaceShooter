@@ -4,22 +4,16 @@ import com.badlogic.gdx.Gdx;
 
 public class EnemyTurret extends Enemy {
 	private float shootTimer;
-	private float degrees;
 	EnemyTurret() {
 		super(5);
 		shootTimer = 0;
-		setOrigin(getWidth()/2,getHeight()/2);
-		degrees = 0.0f;
 	}
 
 	public void updateEnemy(Player player, BulletManager bulletManager) {
 		
 		if (player != null) {
 			// Point the enemy towards the player.
-			float angle = (float) Math.atan2(getY() - player.getY(), getX()
-					- player.getX());
-			float degrees = (float) (angle * (180 / Math.PI));
-			setRotation(degrees - 90);
+			rotateTowards(player);
 			super.updateEnemy(player, bulletManager);
 	
 			// Make a bullet
@@ -32,9 +26,9 @@ public class EnemyTurret extends Enemy {
 						.sqrt(directionX * directionX + directionY * directionY);
 	
 				float velocityX = (float) (directionX
-						* (SpaceShooter.getBulletSpeed()) / sq);
+						* (SpaceShooter.getBulletSpeed()*1.5f) / sq);
 				float velocityY = (float) (directionY
-						* (SpaceShooter.getBulletSpeed()) / sq);
+						* (SpaceShooter.getBulletSpeed()*1.5f) / sq);
 				
 				bulletManager.getList().add(new EnemyBulletBasic(getX(), getY(),velocityX,velocityY,
 						0));
@@ -42,7 +36,6 @@ public class EnemyTurret extends Enemy {
 			}
 		}
 		else {
-			setRotation(degrees - 90);
 			super.updateEnemy(player, bulletManager);
 		}
 	}

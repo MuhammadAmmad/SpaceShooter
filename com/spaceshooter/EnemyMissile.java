@@ -4,24 +4,18 @@ package com.spaceshooter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class EnemyMissile extends Enemy {
 	private final float HOMING_SPEED;
-	private float velocityX;
-	private float velocityY;
-	private float angle;
 	private ParticleEffect particle;
-
-	private float downTimer;// shoot downwards for a limited time to give the
-							// player time to react.
-
+	private Vector2 vectorV;
 	EnemyMissile() {
 		super(1, ResourceManager.Missile);
 		setRotation(getRotation() + 180);
 		HOMING_SPEED = SpaceShooter.getBulletSpeed() * 2.0f;
-		velocityX = 0.0f;
-		velocityY = 0.0f;
 		particle = new ParticleEffect();
+		vectorV = new Vector2();
 		particle.load(Gdx.files.internal(ResourceManager.MissileParticle),
 				Gdx.files.internal("media"));
 		for (int i = 0; i < particle.getEmitters().size; i++) {
@@ -32,37 +26,14 @@ public class EnemyMissile extends Enemy {
 	}
 
 	public void updateEnemy(Player player, BulletManager bulletManager) {
-		downTimer += Gdx.graphics.getDeltaTime() / 5;
 		if (player != null) {
-
 			// Point the enemy towards the player.
-			angle = (float) Math.atan2(getY() - player.getY(),
-					getX() - player.getX());
-			float degrees = (float) (angle * (180 / Math.PI));
-			setRotation(degrees + 90);
-			/*
-			 * translate(100 * Gdx.graphics.getDeltaTime() * (float)
-			 * Math.cos(degrees - 90), 100 * Gdx.graphics.getDeltaTime() *
-			 * (float) Math.sin(degrees - 90));
-			 */
-			// this.setY(this.getY() - 150 * Gdx.graphics.getDeltaTime());
-
-			// Move the enemy towards the player. Clean this up *
-			float directionX = getX() - player.getX();
-			float directionY = getY() - player.getY();
-			double sq = Math.sqrt(directionX * directionX + directionY
-					* directionY);
-
-			velocityX = (float) (directionX
-					* (HOMING_SPEED * Gdx.graphics.getDeltaTime()) / sq);
-			velocityY = (float) (directionY
-					* (HOMING_SPEED * Gdx.graphics.getDeltaTime()) / sq);
-
-			translate(-velocityX, -velocityY);
-
+			rotateTowardsFlipped(player);
+			// Move the enemy towards the player. 
+			vectorV = moveTowards(HOMING_SPEED,player);
 		} 
 		else {
-			translate(-velocityX, -velocityY);
+			translate(vectorV.x,vectorV.y);
 		}
 
 	}
@@ -72,8 +43,8 @@ public class EnemyMissile extends Enemy {
 				+ (getTexture().getHeight() / 2)); // set the particle's
 													// position to
 		for (int i = 0; i < particle.getEmitters().size; i++) {
-			particle.getEmitters().get(i).getAngle().setLow(angle - 180); // min
-			particle.getEmitters().get(i).getAngle().setHigh(angle - 180); // max
+			particle.getEmitters().get(i).getAngle().setLow(getRotation() - 270); // minimum angle
+			particle.getEmitters().get(i).getAngle().setHigh(getRotation() - 270); // maximum angle
 
 		}
 		particle.draw(batch, Gdx.graphics.getDeltaTime());

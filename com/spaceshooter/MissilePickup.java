@@ -3,6 +3,7 @@ package com.spaceshooter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+//Player power-up. 
 public class MissilePickup extends Pickup {
 
 	public MissilePickup(float xPos, float yPos) {
@@ -13,5 +14,6 @@ public class MissilePickup extends Pickup {
 	@Override
 	public void update() {
 		translateY(-100 * Gdx.graphics.getDeltaTime());
+		rotate(Gdx.graphics.getDeltaTime()*-100.f);
 	}
 }

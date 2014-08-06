@@ -7,11 +7,12 @@ import java.util.ListIterator;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+//PickupManager handles all Pickups (power-ups), however, the PlayerManager handles the collisions. 
 class PickupManager {
 	private List<Pickup> pickupList;
 	
 	public PickupManager() {
-		pickupList = new LinkedList<Pickup>();
+		pickupList = new ArrayList<Pickup>();
 	}
 	public List<Pickup> getList() {
 		return pickupList;
