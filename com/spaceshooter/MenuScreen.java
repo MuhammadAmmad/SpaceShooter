@@ -36,7 +36,9 @@ public class MenuScreen implements Screen {
 	private SpriteBatch batch;
 	
 	private OrthographicCamera camera;
+	
 	private Rectangle viewport;
+
 	
 	private Player showPlayer;
 	private static boolean hasAnswered;
@@ -45,11 +47,11 @@ public class MenuScreen implements Screen {
 	private TextButton exitButton;
 	private TextButton howToButton;
 	private Label welcomeLabel;
-	
+
 	private static final int VIRTUAL_WIDTH = 480;
 	private static final int VIRTUAL_HEIGHT = 800;
 	private static final float ASPECT_RATIO = (float)VIRTUAL_WIDTH/(float)VIRTUAL_HEIGHT;
-	
+
 	public static class HowToDialog1 extends Dialog {
 		private Skin skin;
 		public HowToDialog1(Skin skin) {
@@ -169,6 +171,7 @@ public class MenuScreen implements Screen {
 				bgsprite2.getColor().b, 125);
 		
 		batch = new SpriteBatch();
+
 		camera = new OrthographicCamera(VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
 		
 		showPlayer = new Player(0,SpaceShooter.getBottomBound()+ 200,false);
@@ -204,6 +207,7 @@ public class MenuScreen implements Screen {
         float h = (float)VIRTUAL_HEIGHT*scale;
         viewport = new Rectangle(crop.x, crop.y, w, h);
     }
+
 	@Override
 	public void render(float delta) {
 		if (hasAnswered && !hasLoaded) {
@@ -254,8 +258,7 @@ public class MenuScreen implements Screen {
 			
 			Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			
-			
+
 			batch.setProjectionMatrix(camera.combined);
 			batch.begin();
 			bgsprite.draw(batch);

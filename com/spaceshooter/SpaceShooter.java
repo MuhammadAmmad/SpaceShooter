@@ -15,6 +15,7 @@ public class SpaceShooter extends Game {
 		setScreen(menuScreen);
 	
 	}
+
 	@Override
 	public void resize(int width, int height) {
 		
