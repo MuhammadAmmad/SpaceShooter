@@ -1,6 +1,5 @@
 package com.spaceshooter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -21,8 +20,8 @@ public class EnemyManager {
 	private final int MIDDLE_RIGHT = SpaceShooter.getRightBound()/2;
 	private float enemyTimerLimit; //The number the enemyTimer reaches before it goes back to zero.
 	EnemyManager() {
-		enemyList = new ArrayList<Enemy>();
-		enemyQueue = new ArrayList<Enemy>();
+		enemyList = new LinkedList<Enemy>();
+		enemyQueue = new LinkedList<Enemy>();
 		enemyTimer = 0.0f;
 		enemyTimerLimit = 1.1f;
 	}

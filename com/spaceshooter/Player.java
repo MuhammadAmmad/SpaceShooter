@@ -85,7 +85,7 @@ public class Player extends Sprite {
 		translate(Gdx.input.getDeltaX()*1.5f+(Gdx.graphics.getDeltaTime()),-Gdx.input.getDeltaY()*1.5f+(Gdx.graphics.getDeltaTime()));
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
 			if (Gdx.input.isButtonPressed(Buttons.LEFT) && bulletTimer > 0.02f) {
-				shootSound.play(0.2f);
+				shootSound.play(0.1f);
 				bulletManager.getList().add(new PlayerBullet(getX() - 20,getY(),0,600f,weaponLevel));
 				bulletManager.getList().add(new PlayerBullet(getX() + 25,getY(),0,600f,weaponLevel));
 					
@@ -94,7 +94,7 @@ public class Player extends Sprite {
 		}
 		else if (Gdx.app.getType() == ApplicationType.Android) {
 			if (Gdx.input.isTouched() && bulletTimer > 0.04f) {
-				shootSound.play(0.2f);
+				shootSound.play(0.1f);
 				bulletManager.getList().add(new PlayerBullet(getX() - 20,getY(),0,600f,weaponLevel));
 				bulletManager.getList().add(new PlayerBullet(getX() + 25,getY(),0,600f,weaponLevel));
 					

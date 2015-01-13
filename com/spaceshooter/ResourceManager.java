@@ -47,6 +47,7 @@ public class ResourceManager {
 	public static final String ExplosionParticle1 = "media/explosion2.p";
 	public static final String ExplosionSound1 = "media/explosionsound.mp3";
 	public static final String PlayerShootSound = "media/lasersound.mp3";
+	public static final String PowerUpSound = "media/reload.mp3";
 	private static ParticleEffectLoader.ParticleEffectParameter param;
 	public ResourceManager() {
 		param.imagesDir = Gdx.files.internal("media");
@@ -89,6 +90,7 @@ public class ResourceManager {
 		assetManager.load(EnemySpinnerHard,Texture.class);
 		assetManager.load(ExplosionSound1,Sound.class);
 		assetManager.load(PlayerShootSound,Sound.class);
+		assetManager.load(PowerUpSound,Sound.class);
 		assetManager.load(ExplosionParticle1,ParticleEffect.class,param); 
 		assetManager.finishLoading();
 	}

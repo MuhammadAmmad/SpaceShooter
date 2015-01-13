@@ -1,6 +1,5 @@
 package com.spaceshooter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,7 +17,7 @@ public class BulletManager {
 	/* Use a double LinkedList instead of an ArrayList to store Bullets to improve efficiency and make removing elements 
 	  take constant time*/
 	BulletManager() {
-		bulletList = new ArrayList<Bullet>();
+		bulletList = new LinkedList<Bullet>();
 		blowX = 0.0f;
 		blowY = 0.0f;
 		blowTimer = 0.0f;

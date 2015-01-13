@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -34,6 +36,7 @@ public class MenuScreen implements Screen {
 	private SpriteBatch batch;
 	
 	private OrthographicCamera camera;
+	private Rectangle viewport;
 	
 	private Player showPlayer;
 	private static boolean hasAnswered;
@@ -42,6 +45,10 @@ public class MenuScreen implements Screen {
 	private TextButton exitButton;
 	private TextButton howToButton;
 	private Label welcomeLabel;
+	
+	private static final int VIRTUAL_WIDTH = 480;
+	private static final int VIRTUAL_HEIGHT = 800;
+	private static final float ASPECT_RATIO = (float)VIRTUAL_WIDTH/(float)VIRTUAL_HEIGHT;
 	
 	public static class HowToDialog1 extends Dialog {
 		private Skin skin;
@@ -162,14 +169,41 @@ public class MenuScreen implements Screen {
 				bgsprite2.getColor().b, 125);
 		
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(VIRTUAL_WIDTH,VIRTUAL_HEIGHT);
 		
 		showPlayer = new Player(0,SpaceShooter.getBottomBound()+ 200,false);
 		showPlayer.hideHitbox();
 		//stage.getRoot().setColor(1f,1f,1f,0f);
 		//stage.getRoot().addAction(Actions.fadeIn(2f));
 	}
+	@Override
+    public void resize(int width, int height) {
+		
+		stage.getViewport().update(width, height, true);
+		
+        // calcualte the viewport.
+        float aspectRatio = (float)width/(float)height;
+        float scale = 1f;
+        Vector2 crop = new Vector2(0f, 0f); 
+        if(aspectRatio > ASPECT_RATIO)
+        {
+            scale = (float)height/(float)VIRTUAL_HEIGHT;
+            crop.x = (width - VIRTUAL_WIDTH*scale)/2f;
+        }
+        else if(aspectRatio < ASPECT_RATIO)
+        {
+            scale = (float)width/(float)VIRTUAL_WIDTH;
+            crop.y = (height - VIRTUAL_HEIGHT*scale)/2f;
+        }
+        else
+        {
+            scale = (float)width/(float)VIRTUAL_WIDTH;
+        }
 
+        float w = (float)VIRTUAL_WIDTH*scale;
+        float h = (float)VIRTUAL_HEIGHT*scale;
+        viewport = new Rectangle(crop.x, crop.y, w, h);
+    }
 	@Override
 	public void render(float delta) {
 		if (hasAnswered && !hasLoaded) {
@@ -213,8 +247,15 @@ public class MenuScreen implements Screen {
 			bgsprite2.setV(2f * scrollTimer);
 			bgsprite2.setV2(2f * scrollTimer - 1);
 			
+			camera.update();
+			// We need to set the viewport:
+			Gdx.gl.glViewport((int) viewport.x, (int) viewport.y,
+                    (int) viewport.width, (int) viewport.height);
+			
 			Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			
+			
 			batch.setProjectionMatrix(camera.combined);
 			batch.begin();
 			bgsprite.draw(batch);
@@ -224,12 +265,6 @@ public class MenuScreen implements Screen {
 			stage.draw();
 			Table.drawDebug(stage);
 		}
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-
 	}
 
 	@Override

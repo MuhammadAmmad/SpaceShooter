@@ -1,6 +1,5 @@
 package com.spaceshooter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -12,7 +11,7 @@ class PickupManager {
 	private List<Pickup> pickupList;
 	
 	public PickupManager() {
-		pickupList = new ArrayList<Pickup>();
+		pickupList = new LinkedList<Pickup>();
 	}
 	public List<Pickup> getList() {
 		return pickupList;
